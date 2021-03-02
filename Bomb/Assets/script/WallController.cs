@@ -16,14 +16,15 @@ public class WallController : MonoBehaviour
 
     private void Awake()
     {
-        InitMap(8,9);
+        InitMap(8,9,10);
     }
 
-    public void InitMap(int x,int y) {
+    public void InitMap(int x,int y,int wallNum) {
         this.X = x;
         this.Y = y;
         CreateSuperWall();
         findAllEmpty();
+        createWall(wallNum);
     }
 
     /// <summary>
@@ -78,15 +79,32 @@ public class WallController : MonoBehaviour
             for (int j = -Y + 1; j <= Y; j += 2)
             {
                 vList.Add(new Vector2(i,j));
+                //createObject1(i,j);
             }
         }
 
         for (int i = -X + 2; i < X - 1; i += 2)
         {
-            for (int j = -Y + 1; j <= Y; j ++)
+            for (int j = -Y + 1; j < Y; j ++)
             {
                 vList.Add(new Vector2(i, j));
+                //createObject1(i, j);
             }
+        }
+    }
+
+    /// <summary>
+    /// 生成固定数量的墙        
+    /// </summary>
+    /// <param name="count"></param>
+    public void createWall(int count) {
+        for (int i = 0; i < count; i++)
+        {
+            int index = Random.RandomRange(0, vList.Count);
+            Vector2 pos = vList[index];
+            vList.RemoveAt(index);
+            GameObject gameObject = Instantiate(wallPrefab,transform);
+            gameObject.transform.position = pos;
         }
     }
 
