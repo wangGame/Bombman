@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class WallController : MonoBehaviour
 {
-    public GameObject superWallPre;
-    public GameObject wallPrefab;
+    [SerializeField]
+    private GameObject superWallPre;
+    [SerializeField]
+    private GameObject wallPrefab;
     /**
      * 行列
      */
-    private int X;
-    private int Y;
+    private int mapRow;
+    private int mapCol;
 
     private List<Vector2> vList = new List<Vector2>();
 
@@ -20,8 +22,8 @@ public class WallController : MonoBehaviour
     }
 
     public void InitMap(int x,int y,int wallNum) {
-        this.X = x;
-        this.Y = y;
+        this.mapCol = x;
+        this.mapRow = y;
         CreateSuperWall();
         findAllEmpty();
         createWall(wallNum);
@@ -31,8 +33,8 @@ public class WallController : MonoBehaviour
     /// 生成实体墙
     /// </summary>
     private void CreateSuperWall() {
-        for (int i = -X+2; i < X-2; i += 2) {
-            for (int j = -Y+2; j < Y; j += 2) {
+        for (int i = - mapCol+2; i < mapCol-2; i += 2) {
+            for (int j = -mapRow+2; j < mapRow; j += 2) {
                 GameObject wall = Instantiate(superWallPre,transform);
                 wall.transform.position = new Vector3(i+1,j);
             }
@@ -41,27 +43,27 @@ public class WallController : MonoBehaviour
 
         ///up
         ///
-        for (int i = -X; i < X - 1; i ++) {
-            createObject(i + 1, Y);
+        for (int i = -mapCol; i < mapCol - 1; i ++) {
+            createObject(i + 1, mapRow);
         }
 
         ///down
         ///
-        for (int i = -X; i < X - 1; i++)
+        for (int i = -mapCol; i < mapCol - 1; i++)
         {
-            createObject(i + 1, -Y);
+            createObject(i + 1, -mapRow);
         }
 
         ///left
         ///
-        for (int i = -Y+1; i < Y; i++)
+        for (int i = -mapRow + 1; i < mapRow; i++)
         {
-            createObject(-X + 1, i);
+            createObject(-mapCol + 1, i);
         }
 
-        for (int i = -Y+1; i < Y; i++)
+        for (int i = -mapRow+1; i < mapRow; i++)
         {
-            createObject(X-1, i);
+            createObject(mapCol - 1, i);
         }
     }
 
@@ -74,18 +76,18 @@ public class WallController : MonoBehaviour
     /// 找出所有空位置
     /// </summary>
     public void findAllEmpty() {
-        for (int i = -X + 3; i < X - 1; i += 2)
+        for (int i = -mapCol + 3; i < mapCol - 1; i += 2)
         {
-            for (int j = -Y + 1; j <= Y; j += 2)
+            for (int j = -mapRow + 1; j <= mapRow; j += 2)
             {
                 vList.Add(new Vector2(i,j));
                 //createObject1(i,j);
             }
         }
 
-        for (int i = -X + 2; i < X - 1; i += 2)
+        for (int i = -mapCol + 2; i < mapCol - 1; i += 2)
         {
-            for (int j = -Y + 1; j < Y; j ++)
+            for (int j = -mapRow + 1; j < mapRow; j ++)
             {
                 vList.Add(new Vector2(i, j));
                 //createObject1(i, j);
@@ -100,7 +102,7 @@ public class WallController : MonoBehaviour
     public void createWall(int count) {
         for (int i = 0; i < count; i++)
         {
-            int index = Random.RandomRange(0, vList.Count);
+            int index = Random.Range(0, vList.Count);
             Vector2 pos = vList[index];
             vList.RemoveAt(index);
             GameObject gameObject = Instantiate(wallPrefab,transform);
